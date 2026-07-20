@@ -88,36 +88,220 @@ body.is-loading {
   transition: transform 180ms ease-out;
 }
 
-/* V1 — a liquid sunpath, matching the luminous island-day journey. */
+/* V1 — an isometric Okno is assembled directly from the loading datum. */
 body[data-version="v1"] .page-loader {
-  color: #dffcff;
+  color: #e9fff4;
   background:
-    radial-gradient(circle at 72% 24%, rgba(255,234,125,.88), rgba(255,234,125,0) 18%),
-    linear-gradient(155deg, #063e48 0%, #087f8c 48%, #32cbbb 100%);
+    radial-gradient(circle at 50% 43%, rgba(89, 239, 198, .17), transparent 34%),
+    radial-gradient(circle at 76% 16%, rgba(235, 255, 161, .11), transparent 22%),
+    linear-gradient(145deg, #031a1c 0%, #063a3b 55%, #075e58 100%);
 }
 
-body[data-version="v1"] .loader-mark::before {
+body[data-version="v1"] .page-loader::before {
   content: "";
   position: absolute;
-  inset: 18% 8% 22%;
-  border-radius: 50% 50% 46% 54%;
-  border: 1px solid rgba(255,255,255,.58);
-  transform: rotate(-7deg) scale(calc(.72 + var(--loader-progress) * .28));
-  box-shadow: inset 0 0 42px rgba(178,255,240,.28), 0 20px 70px rgba(0,48,62,.36);
+  inset: -20%;
+  opacity: .24;
+  background-image:
+    linear-gradient(rgba(191, 255, 234, .16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(191, 255, 234, .16) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse at center, #000 0 30%, transparent 70%);
+  transform: perspective(520px) rotateX(64deg) translateY(28%);
 }
 
-body[data-version="v1"] .loader-mark::after {
+body[data-version="v1"] .loader-inner-build {
+  width: min(88vw, 720px);
+  gap: 18px;
+}
+
+body[data-version="v1"] .loader-mark-home {
+  --build-base: clamp(0, calc(var(--loader-progress) * 5), 1);
+  --build-shell: clamp(0, calc((var(--loader-progress) - .16) * 4), 1);
+  --build-glass: clamp(0, calc((var(--loader-progress) - .42) * 4.4), 1);
+  --build-roof: clamp(0, calc((var(--loader-progress) - .64) * 4.5), 1);
+  --build-light: clamp(0, calc((var(--loader-progress) - .84) * 6.25), 1);
+  width: min(76vw, 470px);
+  aspect-ratio: 1.435;
+  isolation: isolate;
+  filter: drop-shadow(0 34px 42px rgba(0, 10, 11, .42));
+}
+
+body[data-version="v1"] .loader-mark-home::before,
+body[data-version="v1"] .loader-mark-home::after {
+  content: none;
+}
+
+.loader-build-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.loader-build-svg * { vector-effect: non-scaling-stroke; }
+
+.build-grid {
+  fill: none;
+  stroke: rgba(174, 255, 228, .32);
+  stroke-width: .8;
+  opacity: calc(.08 + var(--build-base) * .45);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(calc(.92 + var(--build-base) * .08));
+  transition: opacity 180ms ease-out, transform 180ms ease-out;
+}
+
+.build-shadow {
+  fill: rgba(0, 8, 9, .42);
+  opacity: calc(var(--build-base) * .78);
+  filter: blur(8px);
+}
+
+.build-foundation {
+  fill: #d9eee7;
+  stroke: #bafbe4;
+  stroke-width: 1.2;
+  opacity: var(--build-base);
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(var(--build-base)) translateY(calc((1 - var(--build-base)) * 12px));
+  transition: opacity 180ms ease-out, transform 180ms ease-out;
+}
+
+.build-shell,
+.build-glass,
+.build-roof {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transition: opacity 180ms ease-out, transform 180ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.build-shell {
+  opacity: var(--build-shell);
+  transform: translateY(calc((1 - var(--build-shell)) * 34px)) scaleY(calc(.68 + var(--build-shell) * .32));
+}
+
+.build-front { fill: #f7fbf4; stroke: #bafbe4; stroke-width: 1.2; }
+.build-side { fill: #dbe7e1; stroke: #a3dacb; stroke-width: 1.2; }
+.build-timber { fill: #a66c3f; stroke: #d9a879; stroke-width: 1; }
+
+.build-glass {
+  fill: rgba(16, 54, 55, .84);
+  stroke: #a6f2dc;
+  stroke-width: 1.1;
+  opacity: var(--build-glass);
+  transform: translateY(calc((1 - var(--build-glass)) * 15px)) scale(calc(.9 + var(--build-glass) * .1));
+}
+
+.build-glass path { fill: none; }
+.build-glass rect { fill: rgba(7, 35, 36, .76); }
+
+.build-roof {
+  stroke: #cbfff0;
+  stroke-width: 1.1;
+  opacity: var(--build-roof);
+  transform-origin: 50% 70%;
+  transform: translateY(calc((1 - var(--build-roof)) * -38px)) rotate(calc((1 - var(--build-roof)) * -4deg));
+}
+
+.roof-front { fill: #fffdf1; }
+.roof-side { fill: #e5eee8; }
+.build-roof path { fill: none; stroke: rgba(126, 171, 158, .58); stroke-width: .8; }
+
+.build-outline {
+  fill: none;
+  stroke: rgba(226, 255, 246, .88);
+  stroke-width: 1.05;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--loader-progress));
+  opacity: calc(.16 + var(--loader-progress) * .84);
+  filter: drop-shadow(0 0 5px rgba(170, 255, 228, .5));
+  transition: stroke-dashoffset 180ms ease-out;
+}
+
+.build-light {
+  fill: #f3ffc2;
+  opacity: calc(var(--build-light) * .62);
+  filter: drop-shadow(0 0 14px #eaff9a);
+  transition: opacity 220ms ease-out;
+}
+
+.build-cursor line { stroke: rgba(190, 255, 233, .22); stroke-width: 1; }
+
+.build-cursor circle {
+  fill: #eeff9e;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: translateX(calc(var(--loader-progress) * 260px));
+  filter: drop-shadow(0 0 8px #eaff9a);
+  transition: transform 180ms ease-out;
+}
+
+body[data-version="v1"] .loader-copy {
+  color: rgba(232, 255, 247, .88);
+  border-top: 1px solid rgba(190, 255, 233, .12);
+  padding-top: 14px;
+}
+
+body[data-version="v1"] .loader-copy strong {
+  color: #efffa3;
+  text-shadow: 0 0 20px rgba(229, 255, 134, .32);
+}
+
+body[data-version="v1"] .loader-build-track {
+  height: 34px;
+  margin-top: -2px;
+  overflow: visible;
+  color: #eaff9a;
+  background: linear-gradient(90deg, rgba(193,255,234,.18), rgba(193,255,234,.18)) 0 0 / 100% 1px no-repeat;
+}
+
+body[data-version="v1"] .loader-build-track::before {
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 2px;
+  clip-path: none;
+  transform: scaleX(var(--loader-progress));
+  background: linear-gradient(90deg, #76e7ce, #efff9e);
+  box-shadow: 0 0 14px rgba(225, 255, 139, .7);
+}
+
+body[data-version="v1"] .loader-build-track::after {
   content: "";
   position: absolute;
-  left: calc(10% + var(--loader-progress) * 70%);
-  top: calc(72% - var(--loader-progress) * 48%);
-  width: 36px;
-  aspect-ratio: 1;
+  top: -4px;
+  left: calc(var(--loader-progress) * 100%);
+  width: 9px;
+  height: 9px;
+  border: 2px solid #efffa3;
   border-radius: 50%;
-  background: #fff4a8;
-  box-shadow: 0 0 28px #fff3a0, 0 0 80px rgba(255,245,164,.6);
-  transform: translate(-50%, -50%);
-  transition: left 180ms ease-out, top 180ms ease-out;
+  background: #073b3a;
+  box-shadow: 0 0 18px #eaff9a;
+  transform: translateX(-50%);
+  transition: left 180ms ease-out;
+}
+
+.loader-stations {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding-top: 12px;
+  color: rgba(219, 255, 244, .54);
+  font: 600 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.loader-stations span { position: relative; white-space: nowrap; }
+
+.loader-stations span::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: 0;
+  width: 1px;
+  height: 7px;
+  background: rgba(219, 255, 244, .42);
 }
 
 /* V2 — a green mountain contour slowly becoming solid land. */
@@ -219,10 +403,11 @@ body[data-version="v4"] .loader-mark::after {
 @media (prefers-reduced-motion: reduce) {
   .page-loader,
   .loader-track::before,
+  .loader-track::after,
   .loader-mark,
   .loader-mark::before,
-  .loader-mark::after {
+  .loader-mark::after,
+  .loader-build-svg * {
     transition: none !important;
   }
 }
-

@@ -13,13 +13,25 @@
   window.__oknoAssetCache = cache;
   const startedAt = performance.now();
   let finished = false;
+  const constructionLabels = [
+    [0.16, 'Surveying the site'],
+    [0.38, 'Setting the foundation'],
+    [0.62, 'Raising the modular shell'],
+    [0.82, 'Installing the glass'],
+    [1.01, 'Locking the roof in place']
+  ];
 
   const setProgress = (value, label) => {
     const bounded = Math.max(0, Math.min(1, value));
     document.documentElement.style.setProperty('--loader-progress', bounded.toFixed(4));
     const percent = Math.round(bounded * 100);
     if (progressText) progressText.textContent = `${String(percent).padStart(3, '0')}%`;
-    if (statusText && label) statusText.textContent = label;
+    if (statusText && label) {
+      const constructionLabel = constructionLabels.find(([until]) => bounded < until)?.[1];
+      statusText.textContent = body.dataset.version === 'v1' && label !== 'Welcome home'
+        ? constructionLabel || 'Commissioning the home'
+        : label;
+    }
     if (progressBar) progressBar.setAttribute('aria-valuenow', String(percent));
   };
 

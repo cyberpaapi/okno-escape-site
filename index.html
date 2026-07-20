@@ -10,12 +10,56 @@
   <link rel="preload" href="assets/v2-poster-01.webp" as="image" type="image/webp">
   <link rel="stylesheet" href="styles.css?v=7">
   <link rel="stylesheet" href="v2.css?v=7">
-  <link rel="stylesheet" href="page-loaders.css?v=7">
+  <link rel="stylesheet" href="page-loaders.css?v=8">
   <noscript><link rel="stylesheet" href="noscript.css"></noscript>
 </head>
 <body class="v2 is-loading" data-version="v1">
   <div class="page-loader" data-page-loader data-desktop-assets="assets/v2-video-01.mp4" data-mobile-assets="assets/v2-video-01.mp4" role="status" aria-live="polite">
-    <div class="loader-inner"><div class="loader-mark" aria-hidden="true"></div><div class="loader-copy"><span data-loader-status>Reading the landscape</span><strong data-loader-percent>000%</strong></div><div class="loader-track" role="progressbar" aria-label="Loading Okno V1" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div></div>
+    <div class="loader-inner loader-inner-build">
+      <div class="loader-mark loader-mark-home" aria-hidden="true">
+        <svg class="loader-build-svg" viewBox="0 0 330 230" role="presentation">
+          <g class="build-grid">
+            <path d="M18 205 155 126 318 163 181 224Z"/>
+            <path d="m43 191 162 37M72 175l162 37M101 159l162 37M130 143l162 37M61 217l137-79M104 226l137-79M147 229l137-79M190 220l128-74"/>
+          </g>
+          <ellipse class="build-shadow" cx="168" cy="194" rx="123" ry="22"/>
+          <g class="build-foundation">
+            <polygon points="38,181 198,204 291,156 132,135"/>
+            <polyline points="38,181 198,204 291,156"/>
+          </g>
+          <g class="build-shell">
+            <polygon class="build-side" points="198,105 285,80 285,155 198,198"/>
+            <polygon class="build-front" points="46,181 46,98 122,45 198,107 198,198"/>
+            <polygon class="build-timber" points="52,176 52,104 91,76 91,186"/>
+          </g>
+          <g class="build-glass">
+            <polygon points="98,186 98,71 122,54 177,111 177,191"/>
+            <path d="M122 55v134M98 126h79"/>
+            <rect x="207" y="119" width="57" height="43" rx="1"/>
+          </g>
+          <g class="build-roof">
+            <polygon class="roof-front" points="39,98 121,37 205,101 197,112 122,54 48,107"/>
+            <polygon class="roof-side" points="122,45 209,20 291,76 198,112"/>
+            <path d="M144 39 220 106M166 33 242 99M188 27 264 91"/>
+          </g>
+          <g class="build-outline">
+            <polygon pathLength="1" points="46,181 46,98 122,45 198,107 285,80 285,155 198,204 38,181"/>
+            <path pathLength="1" d="M198 107v97M122 45l87 7 76 28M38 181l94-46 159 21"/>
+          </g>
+          <g class="build-light">
+            <polygon points="103,181 103,76 122,62 171,113 171,185"/>
+          </g>
+          <g class="build-cursor">
+            <line x1="35" y1="214" x2="295" y2="214"/>
+            <circle cx="35" cy="214" r="4"/>
+          </g>
+        </svg>
+      </div>
+      <div class="loader-copy"><span data-loader-status>Surveying the site</span><strong data-loader-percent>000%</strong></div>
+      <div class="loader-track loader-build-track" role="progressbar" aria-label="Constructing the Okno V1 modular home" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="loader-stations" aria-hidden="true"><span>01 · slab</span><span>02 · shell</span><span>03 · glass</span><span>04 · roof</span></div>
+      </div>
+    </div>
   </div>
   <a class="skip-link" href="#main">Skip to the island journey</a>
   <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
@@ -266,7 +310,7 @@
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
   <script src="vendor/lenis.min.js"></script>
-  <script src="page-loader.js?v=7"></script>
+  <script src="page-loader.js?v=8"></script>
   <script src="app.js?v=7"></script>
 </body>
 </html>
