@@ -35,7 +35,7 @@
   let finished = false;
   let targetProgress = 0;
   let visualProgress = 0;
-  let progressLabel = 'Reading the landscape';
+  let progressLabel = 'Opening the horizon';
   let progressFrame = 0;
   let lastFrameAt = startedAt;
   const progressWaiters = [];
@@ -79,8 +79,8 @@
     if (reduceMotion || gap <= .0005) {
       visualProgress = targetProgress;
     } else {
-      const easedStep = gap * (1 - Math.exp(-elapsed / 210));
-      const minimumStep = elapsed * .00011;
+      const easedStep = gap * (1 - Math.exp(-elapsed / 175));
+      const minimumStep = elapsed * .00014;
       visualProgress = Math.min(targetProgress, visualProgress + Math.max(easedStep, minimumStep));
     }
 
@@ -96,9 +96,9 @@
     const bounded = Math.max(0, Math.min(1, value));
     progressLabel = label || progressLabel;
 
-    if (!isV1 || reduceMotion) {
-      targetProgress = bounded;
-      visualProgress = bounded;
+    if (reduceMotion) {
+      targetProgress = Math.max(targetProgress, bounded);
+      visualProgress = targetProgress;
       paintProgress(visualProgress, progressLabel);
       resolveProgressWaiters();
       return;
@@ -124,7 +124,7 @@
 
   const fetchAsset = async (url, index) => {
     if (cache.has(url)) {
-      setAssetProgress(index, 1, `Film ${index + 1} of ${assets.length} ready`);
+      setAssetProgress(index, 1, 'Bringing the landscape closer');
       return;
     }
     loaderState.activeAsset = url;
@@ -134,9 +134,7 @@
     const reader = response.body?.getReader();
     const chunks = [];
     let received = 0;
-    const loadingLabel = /\.(mp4|webm)(?:$|\?)/i.test(url)
-      ? `Loading film ${index + 1} of ${assets.length}`
-      : `Loading scene ${index + 1} of ${assets.length}`;
+    const loadingLabel = 'Bringing the landscape closer';
 
     if (reader) {
       while (true) {
@@ -154,7 +152,7 @@
     const blob = new Blob(chunks, { type: response.headers.get('content-type') || '' });
     cache.set(url, { blob, objectUrl: URL.createObjectURL(blob), ready: false });
     window.dispatchEvent(new CustomEvent('okno:asset-ready', { detail: { url } }));
-    setAssetProgress(index, 1, `Film ${index + 1} of ${assets.length} downloaded`);
+    setAssetProgress(index, 1, 'Setting the horizon');
   };
 
   const fetchAssetUntilReady = async (url, index) => {
@@ -166,12 +164,12 @@
         await fetchAsset(url, index);
       } catch (error) {
         console.warn(`Loader retry ${attempt} for ${url}`, error);
-        progressLabel = `Retrying film ${index + 1} of ${assets.length}`;
+        progressLabel = 'Waiting for clear skies';
         paintProgress(visualProgress, progressLabel);
         await new Promise((resolve) => setTimeout(resolve, Math.min(8000, 700 * (2 ** Math.min(attempt - 1, 4)))));
       }
     }
-    setAssetProgress(index, 1, `Film ${index + 1} of ${assets.length} downloaded`);
+    setAssetProgress(index, 1, 'Setting the horizon');
     loaderState.retry = 0;
     loaderState.downloaded += 1;
     loader.dataset.loaderDownloaded = String(loaderState.downloaded);
@@ -225,7 +223,7 @@
       video.src = entry.objectUrl;
       video.load();
       if (video.readyState >= 2) onReady();
-      progressLabel = `Preparing film ${index + 1} of ${assets.length}`;
+      progressLabel = 'Bringing the view into focus';
       paintProgress(visualProgress, progressLabel);
     });
   };
@@ -240,14 +238,14 @@
         console.warn(`Video preparation retry ${attempt} for ${url}`, error);
         const entry = cache.get(url);
         if (entry) entry.ready = false;
-        progressLabel = `Retrying film ${index + 1} of ${assets.length}`;
+        progressLabel = 'Waiting for clear skies';
         paintProgress(visualProgress, progressLabel);
         await new Promise((resolve) => setTimeout(resolve, Math.min(5000, 500 * attempt)));
       }
     }
     loaderState.prepared += 1;
     loader.dataset.loaderPrepared = String(loaderState.prepared);
-    setProgress(.94 + ((index + 1) / Math.max(1, assets.length)) * .06, `Film ${index + 1} of ${assets.length} ready`);
+    setProgress(.94 + ((index + 1) / Math.max(1, assets.length)) * .06, 'Opening the view');
   };
 
   const finish = async () => {
@@ -271,7 +269,7 @@
   };
 
   window.__oknoLoaderReady = (async () => {
-    setProgress(0, 'Reading the landscape');
+    setProgress(.77, 'Opening the horizon');
     for (let index = 0; index < assets.length; index += 1) {
       await fetchAssetUntilReady(assets[index], index);
     }
