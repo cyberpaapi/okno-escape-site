@@ -12,7 +12,15 @@
   const cache = window.__oknoAssetCache || new Map();
   window.__oknoAssetCache = cache;
   const startedAt = performance.now();
+  const isV1 = body.dataset.version === 'v1';
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let finished = false;
+  let targetProgress = 0;
+  let visualProgress = 0;
+  let progressLabel = 'Reading the landscape';
+  let progressFrame = 0;
+  let lastFrameAt = startedAt;
+  const progressWaiters = [];
   const constructionLabels = [
     [0.16, 'Surveying the site'],
     [0.38, 'Setting the foundation'],
@@ -21,18 +29,72 @@
     [1.01, 'Locking the roof in place']
   ];
 
-  const setProgress = (value, label) => {
+  const paintProgress = (value, label) => {
     const bounded = Math.max(0, Math.min(1, value));
     document.documentElement.style.setProperty('--loader-progress', bounded.toFixed(4));
     const percent = Math.round(bounded * 100);
     if (progressText) progressText.textContent = `${String(percent).padStart(3, '0')}%`;
     if (statusText && label) {
       const constructionLabel = constructionLabels.find(([until]) => bounded < until)?.[1];
-      statusText.textContent = body.dataset.version === 'v1' && label !== 'Welcome home'
+      statusText.textContent = isV1 && label !== 'Welcome home'
         ? constructionLabel || 'Commissioning the home'
         : label;
     }
     if (progressBar) progressBar.setAttribute('aria-valuenow', String(percent));
+  };
+
+  const resolveProgressWaiters = () => {
+    for (let index = progressWaiters.length - 1; index >= 0; index -= 1) {
+      if (visualProgress >= progressWaiters[index].threshold) {
+        progressWaiters.splice(index, 1)[0].resolve();
+      }
+    }
+  };
+
+  const animateProgress = (now) => {
+    progressFrame = 0;
+    const elapsed = Math.min(48, Math.max(0, now - lastFrameAt));
+    lastFrameAt = now;
+    const gap = targetProgress - visualProgress;
+
+    if (reduceMotion || gap <= .0005) {
+      visualProgress = targetProgress;
+    } else {
+      const easedStep = gap * (1 - Math.exp(-elapsed / 210));
+      const minimumStep = elapsed * .00011;
+      visualProgress = Math.min(targetProgress, visualProgress + Math.max(easedStep, minimumStep));
+    }
+
+    paintProgress(visualProgress, progressLabel);
+    resolveProgressWaiters();
+
+    if (visualProgress < targetProgress) {
+      progressFrame = requestAnimationFrame(animateProgress);
+    }
+  };
+
+  const setProgress = (value, label) => {
+    const bounded = Math.max(0, Math.min(1, value));
+    progressLabel = label || progressLabel;
+
+    if (!isV1 || reduceMotion) {
+      targetProgress = bounded;
+      visualProgress = bounded;
+      paintProgress(visualProgress, progressLabel);
+      resolveProgressWaiters();
+      return;
+    }
+
+    targetProgress = Math.max(targetProgress, bounded);
+    if (!progressFrame) {
+      lastFrameAt = performance.now();
+      progressFrame = requestAnimationFrame(animateProgress);
+    }
+  };
+
+  const waitForProgress = (threshold) => {
+    if (visualProgress >= threshold) return Promise.resolve();
+    return new Promise((resolve) => progressWaiters.push({ threshold, resolve }));
   };
 
   const fetchAsset = async (url, index) => {
@@ -70,10 +132,16 @@
   const finish = async () => {
     if (finished) return;
     finished = true;
-    const remaining = Math.max(0, 900 - (performance.now() - startedAt));
+    const remaining = Math.max(0, (isV1 ? 1050 : 900) - (performance.now() - startedAt));
     if (remaining) await new Promise((resolve) => setTimeout(resolve, remaining));
-    setProgress(1, 'Welcome home');
-    await new Promise((resolve) => setTimeout(resolve, 280));
+    setProgress(1, isV1 ? 'Commissioning the home' : 'Welcome home');
+    if (isV1 && !reduceMotion) await waitForProgress(.9995);
+    visualProgress = 1;
+    targetProgress = 1;
+    progressLabel = 'Welcome home';
+    paintProgress(1, progressLabel);
+    loader.classList.add('is-built');
+    await new Promise((resolve) => setTimeout(resolve, reduceMotion ? 80 : (isV1 ? 560 : 280)));
     loader.classList.add('is-complete');
     body.classList.remove('is-loading');
     body.classList.add('is-loaded');
