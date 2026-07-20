@@ -33,19 +33,28 @@
   const isV1 = body.dataset.version === 'v1';
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let finished = false;
+  let readyAt = 0;
   let targetProgress = 0;
   let visualProgress = 0;
   let progressLabel = 'Opening the horizon';
   let progressFrame = 0;
-  let lastFrameAt = startedAt;
   const progressWaiters = [];
   const assetProgress = assets.map(() => 0);
+  const introDuration = 6500;
+  const cruiseDuration = 4000;
+  const completionDuration = 1200;
   const constructionLabels = [
     [0.16, 'Surveying the site'],
     [0.38, 'Setting the foundation'],
     [0.62, 'Raising the modular shell'],
     [0.82, 'Installing the glass'],
     [1.01, 'Locking the roof in place']
+  ];
+  const journeyLabels = [
+    [.34, 'Opening the horizon'],
+    [.77, 'Drawing in the light'],
+    [.94, 'Bringing the landscape closer'],
+    [1.01, 'Opening the view']
   ];
 
   const paintProgress = (value, label) => {
@@ -55,9 +64,12 @@
     if (progressText) progressText.textContent = `${String(percent).padStart(3, '0')}%`;
     if (statusText && label) {
       const constructionLabel = constructionLabels.find(([until]) => bounded < until)?.[1];
-      statusText.textContent = isV1 && label !== 'Welcome home'
-        ? constructionLabel || 'Commissioning the home'
-        : label;
+      const journeyLabel = journeyLabels.find(([until]) => bounded < until)?.[1];
+      statusText.textContent = label === 'Welcome home'
+        ? label
+        : isV1
+          ? constructionLabel || 'Commissioning the home'
+          : journeyLabel || 'Opening the view';
     }
     if (progressBar) progressBar.setAttribute('aria-valuenow', String(percent));
   };
@@ -70,19 +82,28 @@
     }
   };
 
+  const smoothstep = (value) => value * value * (3 - (2 * value));
+
+  const pacingCeiling = (now) => {
+    const elapsed = Math.max(0, now - startedAt);
+    if (elapsed < introDuration) {
+      const phase = elapsed / introDuration;
+      return .77 * (1 - Math.pow(1 - phase, 1.55));
+    }
+    if (elapsed < introDuration + cruiseDuration) {
+      const phase = (elapsed - introDuration) / cruiseDuration;
+      return .77 + (.17 * smoothstep(phase));
+    }
+    if (!finished || !readyAt) return .94;
+    const completionStart = Math.max(readyAt, startedAt + introDuration + cruiseDuration);
+    const phase = Math.max(0, Math.min(1, (now - completionStart) / completionDuration));
+    return .94 + (.06 * smoothstep(phase));
+  };
+
   const animateProgress = (now) => {
     progressFrame = 0;
-    const elapsed = Math.min(48, Math.max(0, now - lastFrameAt));
-    lastFrameAt = now;
-    const gap = targetProgress - visualProgress;
-
-    if (reduceMotion || gap <= .0005) {
-      visualProgress = targetProgress;
-    } else {
-      const easedStep = gap * (1 - Math.exp(-elapsed / 175));
-      const minimumStep = elapsed * .00014;
-      visualProgress = Math.min(targetProgress, visualProgress + Math.max(easedStep, minimumStep));
-    }
+    const pacedTarget = Math.min(targetProgress, pacingCeiling(now));
+    visualProgress = Math.max(visualProgress, pacedTarget);
 
     paintProgress(visualProgress, progressLabel);
     resolveProgressWaiters();
@@ -106,7 +127,6 @@
 
     targetProgress = Math.max(targetProgress, bounded);
     if (!progressFrame) {
-      lastFrameAt = performance.now();
       progressFrame = requestAnimationFrame(animateProgress);
     }
   };
@@ -251,8 +271,9 @@
   const finish = async () => {
     if (finished) return;
     finished = true;
-    setProgress(1, isV1 ? 'Commissioning the home' : 'Welcome home');
-    if (isV1 && !reduceMotion) await waitForProgress(.9995);
+    readyAt = performance.now();
+    setProgress(1, isV1 ? 'Commissioning the home' : 'Opening the view');
+    if (!reduceMotion) await waitForProgress(.9995);
     visualProgress = 1;
     targetProgress = 1;
     progressLabel = 'Welcome home';
@@ -269,7 +290,7 @@
   };
 
   window.__oknoLoaderReady = (async () => {
-    setProgress(.77, 'Opening the horizon');
+    setProgress(.94, 'Opening the horizon');
     for (let index = 0; index < assets.length; index += 1) {
       await fetchAssetUntilReady(assets[index], index);
     }
