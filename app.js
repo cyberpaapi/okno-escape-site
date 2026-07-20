@@ -1,4 +1,5 @@
-(() => {
+(async () => {
+  if (window.__oknoLoaderReady) await window.__oknoLoaderReady;
   const root = document.documentElement;
   const chapters = [...document.querySelectorAll('.film-chapter')];
   const dots = [...document.querySelectorAll('.chapter-dot')];
@@ -193,10 +194,16 @@
       if (!state || state.loading || state.ready) continue;
       state.loading = true;
       try {
-        const response = await fetch(video.dataset.src);
-        if (!response.ok) throw new Error(`Video unavailable: ${response.status}`);
-        const blob = await response.blob();
-        state.objectUrl = URL.createObjectURL(blob);
+        const cached = window.__oknoAssetCache?.get(video.dataset.src);
+        if (cached?.objectUrl) {
+          state.objectUrl = cached.objectUrl;
+        } else {
+          const response = await fetch(video.dataset.src);
+          if (!response.ok) throw new Error(`Video unavailable: ${response.status}`);
+          const blob = await response.blob();
+          state.objectUrl = URL.createObjectURL(blob);
+          window.__oknoAssetCache?.set(video.dataset.src, { blob, objectUrl: state.objectUrl });
+        }
         video.src = state.objectUrl;
         video.load();
       } catch (error) {

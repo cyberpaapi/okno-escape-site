@@ -1,0 +1,228 @@
+:root {
+  --loader-progress: 0;
+}
+
+html,
+body {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+body.is-loading {
+  overflow: hidden;
+}
+
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #f8fff8;
+  background: #07140d;
+  transition: opacity 700ms cubic-bezier(.22, 1, .36, 1), visibility 700ms;
+}
+
+.page-loader.is-complete {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-inner {
+  position: relative;
+  width: min(82vw, 680px);
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+}
+
+.loader-mark {
+  position: relative;
+  width: clamp(180px, 36vw, 360px);
+  aspect-ratio: 1.55;
+}
+
+.loader-copy {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.loader-copy strong {
+  font-size: clamp(22px, 4vw, 42px);
+  font-weight: 400;
+  letter-spacing: -.04em;
+}
+
+.loader-track {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  overflow: visible;
+  background: rgba(255,255,255,.16);
+}
+
+.loader-track::before {
+  content: "";
+  position: absolute;
+  inset: -8px 0;
+  transform-origin: left center;
+  transform: scaleX(var(--loader-progress));
+  background: currentColor;
+  clip-path: polygon(0 44%, 96% 44%, 100% 50%, 96% 56%, 0 56%);
+  filter: drop-shadow(0 0 12px currentColor);
+  transition: transform 180ms ease-out;
+}
+
+/* V1 — a liquid sunpath, matching the luminous island-day journey. */
+body[data-version="v1"] .page-loader {
+  color: #dffcff;
+  background:
+    radial-gradient(circle at 72% 24%, rgba(255,234,125,.88), rgba(255,234,125,0) 18%),
+    linear-gradient(155deg, #063e48 0%, #087f8c 48%, #32cbbb 100%);
+}
+
+body[data-version="v1"] .loader-mark::before {
+  content: "";
+  position: absolute;
+  inset: 18% 8% 22%;
+  border-radius: 50% 50% 46% 54%;
+  border: 1px solid rgba(255,255,255,.58);
+  transform: rotate(-7deg) scale(calc(.72 + var(--loader-progress) * .28));
+  box-shadow: inset 0 0 42px rgba(178,255,240,.28), 0 20px 70px rgba(0,48,62,.36);
+}
+
+body[data-version="v1"] .loader-mark::after {
+  content: "";
+  position: absolute;
+  left: calc(10% + var(--loader-progress) * 70%);
+  top: calc(72% - var(--loader-progress) * 48%);
+  width: 36px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff4a8;
+  box-shadow: 0 0 28px #fff3a0, 0 0 80px rgba(255,245,164,.6);
+  transform: translate(-50%, -50%);
+  transition: left 180ms ease-out, top 180ms ease-out;
+}
+
+/* V2 — a green mountain contour slowly becoming solid land. */
+body[data-version="v2"] .page-loader {
+  color: #d7ffbf;
+  background: radial-gradient(circle at 50% 76%, #244d32 0%, #0b2215 48%, #06120b 100%);
+}
+
+body[data-version="v2"] .loader-mark {
+  background:
+    linear-gradient(151deg, transparent 48%, rgba(168,240,143,.85) 49% 50%, transparent 51%) 0 68% / 54% 50% no-repeat,
+    linear-gradient(31deg, transparent 48%, rgba(168,240,143,.85) 49% 50%, transparent 51%) 100% 68% / 58% 46% no-repeat;
+  mask-image: linear-gradient(90deg, #000 calc(var(--loader-progress) * 100%), transparent 0);
+}
+
+body[data-version="v2"] .loader-mark::after {
+  content: "";
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 12%;
+  height: 38%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(136,255,145,.24), transparent 68%);
+  filter: blur(8px);
+}
+
+/* V3 — the Scroll World house assembles from light and landscape coordinates. */
+body[data-version="v3"] .page-loader {
+  color: #ecffcf;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255,242,126,.48), transparent 25%),
+    linear-gradient(160deg, #0b754f 0%, #13a987 45%, #65d8c9 100%);
+}
+
+body[data-version="v3"] .loader-mark::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  bottom: 12%;
+  height: 56%;
+  background:
+    linear-gradient(135deg, transparent 49%, currentColor 50% 51%, transparent 52%) left top / 50% 52% no-repeat,
+    linear-gradient(45deg, transparent 49%, currentColor 50% 51%, transparent 52%) right top / 50% 52% no-repeat,
+    linear-gradient(currentColor,currentColor) center bottom / 100% 52% no-repeat;
+  opacity: calc(.2 + var(--loader-progress) * .8);
+  clip-path: inset(calc((1 - var(--loader-progress)) * 100%) 0 0);
+  filter: drop-shadow(0 0 20px rgba(232,255,201,.48));
+}
+
+body[data-version="v3"] .loader-mark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(circle, #000, transparent 72%);
+  transform: perspective(300px) rotateX(62deg) translateY(24%);
+}
+
+/* V4 — depth rings and measured spatial layers. */
+body[data-version="v4"] .page-loader {
+  color: #c7ffe8;
+  background: radial-gradient(circle at center, #12352d, #07110f 64%);
+}
+
+body[data-version="v4"] .loader-mark {
+  border-radius: 50%;
+  border: 1px solid rgba(183,255,225,.28);
+  box-shadow:
+    0 0 0 calc(18px * var(--loader-progress)) rgba(132,255,205,.07),
+    0 0 0 calc(44px * var(--loader-progress)) rgba(132,255,205,.05),
+    inset 0 0 50px rgba(95,240,184,.12);
+  transform: rotate(calc(var(--loader-progress) * 36deg));
+}
+
+body[data-version="v4"] .loader-mark::before,
+body[data-version="v4"] .loader-mark::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border: 1px solid currentColor;
+  transform: rotate(45deg) scale(calc(.74 + var(--loader-progress) * .26));
+  opacity: .74;
+}
+
+body[data-version="v4"] .loader-mark::after {
+  inset: 32%;
+  transform: rotate(calc(-45deg - var(--loader-progress) * 90deg));
+}
+
+@media (max-width: 700px) {
+  .loader-inner { width: min(84vw, 430px); gap: 18px; }
+  .loader-copy { letter-spacing: .12em; }
+  .loader-mark { width: min(70vw, 300px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-loader,
+  .loader-track::before,
+  .loader-mark,
+  .loader-mark::before,
+  .loader-mark::after {
+    transition: none !important;
+  }
+}
+

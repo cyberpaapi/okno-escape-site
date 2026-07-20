@@ -1,0 +1,7 @@
+body.is-loading {
+  overflow: auto !important;
+}
+
+.page-loader {
+  display: none !important;
+}
