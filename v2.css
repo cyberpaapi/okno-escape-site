@@ -31,11 +31,24 @@
 .v2 .inline-field { border-color: rgba(190, 255, 235, .46); background: rgba(0, 25, 35, .62); }
 .v2 .inline-field button, .v2 .submit-button { color: #05272b; background: linear-gradient(135deg, #b9f7d0, #78e7ee); }
 
-.v2 .scrim-left { background: linear-gradient(90deg, rgba(0,28,34,.73) 0%, rgba(0,28,34,.19) 55%, transparent 82%), linear-gradient(0deg, rgba(0,25,31,.24), transparent 48%); }
-.v2 .scrim-right { background: linear-gradient(270deg, rgba(0,28,34,.72), rgba(0,28,34,.15) 58%, transparent 82%); }
-.v2 .scrim-bottom { background: linear-gradient(0deg, rgba(0,26,32,.72), rgba(0,26,32,.06) 62%, transparent); }
-.v2 .scrim-full { background: linear-gradient(90deg, rgba(0,15,28,.72), rgba(0,15,28,.18) 55%, rgba(0,11,28,.39)), linear-gradient(0deg, rgba(0,12,27,.42), transparent 56%); }
-.v2 .interior-film .scrim-left { background: linear-gradient(90deg, rgba(1,28,33,.72), rgba(1,28,33,.12) 58%, transparent 82%); }
+.v2 .film-chapter .poster,
+.v2 .film-chapter .media-layer video {
+  filter: brightness(1.035) contrast(1.075) saturate(1.09);
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: opacity, transform;
+}
+.v2 .film-chapter .poster { animation: none; transform: translateZ(0) scale(1.002); }
+.v2 .film-chapter .chapter-content h1,
+.v2 .film-chapter .chapter-content h2 {
+  text-shadow: 0 2px 22px rgba(0, 18, 24, .62), 0 1px 5px rgba(0, 14, 20, .58);
+}
+
+.v2 .scrim-left { background: linear-gradient(90deg, rgba(0,28,34,.1825) 0%, rgba(0,28,34,.0475) 55%, transparent 82%), linear-gradient(0deg, rgba(0,25,31,.06), transparent 48%); }
+.v2 .scrim-right { background: linear-gradient(270deg, rgba(0,28,34,.18), rgba(0,28,34,.0375) 58%, transparent 82%); }
+.v2 .scrim-bottom { background: linear-gradient(0deg, rgba(0,26,32,.18), rgba(0,26,32,.015) 62%, transparent); }
+.v2 .scrim-full { background: linear-gradient(90deg, rgba(0,15,28,.18), rgba(0,15,28,.045) 55%, rgba(0,11,28,.0975)), linear-gradient(0deg, rgba(0,12,27,.105), transparent 56%); }
+.v2 .interior-film .scrim-left { background: linear-gradient(90deg, rgba(1,28,33,.18), rgba(1,28,33,.03) 58%, transparent 82%); }
 .v2 .aurora-film .eyebrow, .v2 .aurora-film .form-status { color: #b9f7d0; }
 
 .v2 .content-section { color: #063238; background: linear-gradient(180deg, #f2fff9, #e4f8f1); }
