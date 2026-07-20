@@ -109,7 +109,7 @@ body.v3-world {
 #world .sw-scene__still { object-position: center center; }
 #world .sw-copylayer::before {
   width: min(62vw, 900px);
-  background: linear-gradient(90deg, rgba(235,250,224,.94) 0%, rgba(235,250,224,.78) 36%, rgba(235,250,224,.28) 67%, transparent 100%);
+  background: linear-gradient(90deg, rgba(235,250,224,.235) 0%, rgba(235,250,224,.195) 36%, rgba(235,250,224,.07) 67%, transparent 100%);
 }
 
 #world .sw-copy {
@@ -126,8 +126,9 @@ body.v3-world {
   line-height: .94;
   letter-spacing: -.055em;
   text-wrap: balance;
+  text-shadow: 0 2px 18px rgba(234, 255, 224, .38);
 }
-#world .sw-copy__body { max-width: 38ch; color: #153e2b; font-size: clamp(1rem, 1.35vw, 1.18rem); }
+#world .sw-copy__body { max-width: 22ch; color: #153e2b; font-size: clamp(1rem, 1.35vw, 1.18rem); font-weight: 700; text-shadow: 0 1px 14px rgba(234, 255, 224, .48); }
 #world .sw-copy__tags li { color: #0a5237; background: rgba(242,255,224,.72); border-color: rgba(8,120,81,.25); }
 #world .sw-btn { min-height: 48px; display: inline-flex; align-items: center; }
 #world .sw-btn--primary { color: #fff; background: #092719; }
@@ -170,7 +171,7 @@ button:focus-visible { outline: 3px solid #fff17d; outline-offset: 3px; }
     height: 48%;
     top: auto;
     bottom: 0;
-    background: linear-gradient(0deg, rgba(230,249,216,.97) 5%, rgba(230,249,216,.76) 56%, transparent 100%);
+    background: linear-gradient(0deg, rgba(230,249,216,.2425) 5%, rgba(230,249,216,.19) 56%, transparent 100%);
   }
   #world .sw-copy {
     left: 20px;
@@ -184,7 +185,7 @@ button:focus-visible { outline: 3px solid #fff17d; outline-offset: 3px; }
   #world .sw-copy__num { display: none; }
   #world .sw-copy__eyebrow { margin-top: 0; font-size: .7rem; }
   #world .sw-copy__title { max-width: 11ch; margin-top: 8px; font-size: clamp(2.15rem, 9.2vw, 3.7rem); line-height: .95; }
-  #world .sw-copy__body { margin-top: 12px; font-size: clamp(.92rem, 3.6vw, 1.06rem); line-height: 1.45; }
+  #world .sw-copy__body { margin-top: 10px; font-size: clamp(.92rem, 3.6vw, 1.06rem); line-height: 1.35; }
   #world .sw-copy__tags { margin-top: 12px; }
   #world .sw-copy__tags li { padding: 6px 10px; font-size: .7rem; }
   #world .sw-copy__cta { margin-top: 15px; }

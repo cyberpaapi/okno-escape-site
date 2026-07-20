@@ -4,7 +4,7 @@
   if (!world || typeof window.mountScrollWorld !== 'function') return;
 
   window.mountScrollWorld(world, {
-    hint: 'scroll to move through home',
+    hint: 'scroll',
     nav: false,
     atmosphere: true,
     diveScroll: 1.8,
@@ -21,10 +21,7 @@
         accent: '#0e9d68',
         scroll: 2.1,
         linger: .36,
-        eyebrow: 'Already home',
-        title: 'The house is the horizon.',
-        body: 'Start with the Okno itself—white timber, clear glass, and a living green world gathered around it.',
-        tags: ['Vibrant daylight', 'Centered by design']
+        title: 'Home, here.'
       },
       {
         id: 'threshold',
@@ -36,10 +33,7 @@
         accent: '#d99b1e',
         scroll: 1.7,
         linger: .28,
-        eyebrow: 'Light becomes material',
-        title: 'Made of light and timber.',
-        body: 'Cross the threshold and the landscape stays with you—in leaf shadows, warm grain, and luminous glass.',
-        tags: ['Warm timber', 'Quiet geometry']
+        title: 'Light within.'
       },
       {
         id: 'view',
@@ -51,10 +45,7 @@
         accent: '#168fe8',
         scroll: 1.9,
         linger: .42,
-        eyebrow: 'Inside, looking out',
-        title: 'Every room borrows the view.',
-        body: 'The camera flows from living space to deck while blue water and saturated mountains remain part of the architecture.',
-        tags: ['Crystal water', 'Open panorama']
+        title: 'Water outside.'
       },
       {
         id: 'aurora',
@@ -66,13 +57,10 @@
         accent: '#8e5cf5',
         scroll: 2.15,
         linger: .48,
-        eyebrow: 'The long light',
-        title: 'Night gathers around home.',
-        body: 'Golden hour becomes luminous blue and aurora—yet the Okno stays centered, warm, and unmistakably alive.',
-        tags: ['Aurora sky', 'Warm after dark'],
+        title: 'Aurora above.',
         cta: {
-          primary: { label: 'Find your place', href: '#enquire' },
-          secondary: { label: 'Return to V1', href: 'index.html' }
+          primary: { label: 'Find place', href: '#enquire' },
+          secondary: { label: 'V1', href: 'index.html' }
         }
       }
     ],
